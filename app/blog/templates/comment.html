@@ -1,0 +1,49 @@
+{% extends 'detail.html' %}
+
+{% block title %}评论{% endblock %}
+{% block extra_head_style %}
+<link rel="stylesheet" href="{{ url_for('blog.static',filename='css/detail.css') }}" xmlns="http://www.w3.org/1999/html>
+<link rel="stylesheet" href="{{ url_for('blog.static',filename='css/index.css') }}">
+{% endblock extra_head_style %}
+
+{% block breadcrumb %}
+<nav class="breadcrumb is-small" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="/">首页</a></li>
+        <li><a href="{{ url_for('blog.detail', cate_id=cate.cate_id,post_id=post.post_id) }}">{{ post.title }}</a></li>
+        <li class="is-active"><a href="#" aria-current="page">评论</a></li>
+    </ul>
+</nav>
+{% endblock breadcrumb %}
+
+{% block cate_box %}
+<!-- <div class="side-question"> -->
+    <h3 class="page-title" ><strong class="page-title" style="font-size: 24px;">评论栏</strong></h3>
+<!-- </div> -->
+<!-- </br> -->
+<h4 class="comment-group-title"> 评论（{{ comment_list|length }}）:</h4>
+<ul class="comment-group">
+    {% for comment in comment_list %}
+    <li>
+        <div class="user-info">
+            <span class="username">{{ comment.user.username }}</span>
+            <span class="create-time">{{ comment.add_date }}</span>
+        </div>
+        <p class="comment-content">{{ comment.content }}</p>
+    </li>
+    {% endfor %}
+</ul>
+<br>
+<form action="{{ url_for('admin.comment_add',cate_id=cate.cate_id,post_id=post.post_id,answer_id=answer.answer_id) }}" method="post">
+    <!-- <input type="hidden" name="answer_id" value="{{ answer.answer_id }}"> -->
+    <div class="form-container">
+        <div class="form-group">
+            <input type="text" placeholder="请发布您的评论" name="content" class="form-control">
+        </div>
+        <div class="form-group comment-btn">
+            <button class="btn btn-primary"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 评论</button>
+        </div>
+    </div>
+</form>
+
+{% endblock cate_box %}

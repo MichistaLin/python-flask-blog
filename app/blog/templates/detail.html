@@ -1,0 +1,125 @@
+{% extends 'cate_list.html' %}
+
+
+{% block title %}
+{{ post.title }}
+{% endblock title %}
+
+{% block breadcrumb %}
+<nav class="breadcrumb is-small" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="/">首页</a></li>
+        <li><a href="{{ url_for('blog.cates', cate_id=cate.cate_id) }}">{{ cate.name }}</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{{ post.title }}</a></li>
+    </ul>
+</nav>
+{% endblock breadcrumb %}
+
+{% block cate_box %}
+<div class="pl-2">
+    <h1 class="is-size-3">
+        {{ post.title }}
+    </h1>
+    {% if g.user.user_id not in collections%}
+    <button class="btn btn-primary"
+        style="float:right;color: #0084ff;border-color: #0084ff;background:rgb(0,0,0,0);border-radius: 3px;height:30px;width:70px;">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><a href="{{url_for('auth.collection_add',post_id=post.post_id,user_id=g.user.user_id,cate_id=cate.cate_id)}}">收藏</a>
+    </button>
+    {% else %}
+    <button class="btn btn-primary"
+        style="float:right;color: #0084ff;border-color: #0084ff;background:#fff;border-radius:3px;height:30px;width:70px;"><a href="{{url_for('auth.collection_del',post_id=post.post_id,user_id=g.user.user_id,cate_id=cate.cate_id)}}">已收藏</a>
+    </button>
+    {% endif %}
+    <p class="has-text-grey-light is-size-6 mt-1">
+        <span class="icon"><i class="mdi mdi-clipboard-text-clock-outline"></i></span>{{ post.add_date }}
+        <span class="icon"><i class="mdi mdi-shape-outline"></i></span>{{ post.category.name }}
+        <span class="icon"><i class="mdi mdi-tag-heart-outline"></i></span>{{ post.tags|join(',') }}
+    </p>
+    <div class="content has-text-grey mt-1">{{ post.content|safe }}</div>
+</div>
+{% if g.user %}
+<div style="margin-top: 1.5rem;"  class="box button is-light">
+    <a href="{{ url_for('admin.answer_add',user_id=g.user.user_id,post_id=post.post_id,cate_id=cate.cate_id) }}">发布你的回答</a>
+</div>
+{% endif %}
+
+<div class="button is-light">回答({{ answers|length }})</div>
+<ul class="question-ul">
+    {% for answer in answers %}
+    <li>
+        <form action="{{ url_for('blog.giveLike',cate_id=cate.cate_id) }}" method="post">
+            <div class="question-main">
+                <input type="hidden" name="post_id" value="{{ post.post_id }}">
+                <input type="hidden" name="answer_id" value="{{ answer.answer_id }}">
+                <p class="question-title" style="font-size: 22px;">
+                    <a href="">{{ answer.user.username }}</a>
+                </p>
+                <p class="question-content" style="font-size: 12px">{{ answer.add_date }}</p>
+                <p class="question-content" style="font-size: 15px">{{ answer.content | safe }}</p>
+                <br>
+                <div style="text-align:right;font-size:5px">
+                    <button class="btn btn-primary"
+                        style="color:#0084ff;background: rgba(0,132,255,.1);border-color: transparent;border-radius: 3px">
+                        <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> 赞同 {{ answer.z_number }}
+                    </button>
+                    <a href="{{ url_for('blog.comment',cate_id=cate.cate_id,post_id=post.post_id,answer_id=answer.answer_id) }}">
+                        <span class="btn btn-primary"
+                            style="color:#8590a6;background: none;border-color:transparent;border-radius: 3px">
+                            <span class="glyphicon glyphicon-cloud" aria-hidden="true"></span> {{ answer.c_number }}条评论
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+<hr>
+<div class="level">
+    <div class="level-left">
+        {% if prev_post %}
+        上一篇：<a href="{{ url_for('blog.detail', cate_id=prev_post.category.cate_id, post_id=prev_post.post_id) }}">{{
+            prev_post.title }}</a>
+        {% endif %}
+    </div>
+    <div class="level-right">
+        {% if next_post %}
+        下一篇：<a href="{{ url_for('blog.detail', cate_id=next_post.category.cate_id, post_id=next_post.post_id) }}">{{
+            next_post.title }}</a>
+        {% endif %}
+    </div>
+</div>
+
+<nav class="pagination is-small" role="navigation" aria-label="pagination">
+    {% if pagination.has_prev %}
+    <a href="{{ url_for('admin.article') }}?page={{ pagination.prev_num }}"
+        class="pagination-previous" title="This is the first page">Previous</a>
+    {% endif %}
+    {% if pagination.has_next %}
+    <a href="{{ url_for('admin.article') }}?page={{ pagination.next_num }}"
+        class="pagination-next">Next page</a>
+    {% endif %}
+
+    <ul class="pagination-list">
+        {% for page in pagination.iter_pages() %}
+        {% if page %}
+        {% if page != pagination.page %}
+        <li>
+            <a href="{{ url_for('admin.article') }}?page={{ page }}" class="pagination-link"
+                aria-label="Page 1" aria-current="page">{{ page }}</a>
+        </li>
+        {% else %}
+        <li>
+            <a class="pagination-link is-current" aria-label="Page 1" aria-current="page">{{ page
+                }}</a>
+        </li>
+        {% endif %}
+        {% else %}
+        <span class=pagination-ellipsis>&hellip;</span>
+        {% endif %}
+        {% endfor %}
+
+    </ul>
+</nav>
+{% endblock cate_box %}

@@ -1,0 +1,119 @@
+{% extends 'admin/index.html' %}
+
+{% block menus %}
+<aside class="menu">
+    <p class="menu-label">
+        个人中心
+    </p>
+    <ul class="menu-list">
+        <li><a class="{% if request.path == '/auth/' %}is-active{% endif %}"
+                href="{{ url_for('auth.userinfo') }}">个人信息</a></li>
+        <li>
+            <a class="{% if 'collection' in request.path %}is-active{% endif %}" 
+                href="{{ url_for('auth.collection') }}">我的收藏</a>
+        </li>
+        <li>
+            <a class="{% if 'mypost' in request.path %}is-active{% endif %}" 
+                href="{{ url_for('auth.mypost') }}">我的提问</a>
+        </li>
+        <li>
+            <a class="{% if 'myanswer' in request.path %}is-active{% endif %}" 
+                href="{{ url_for('auth.myanswer') }}">我的回答</a>
+        </li>
+        <li>
+            <a class="{% if 'mycomment' in request.path %}is-active{% endif %}" 
+                href="{{ url_for('auth.mycomment') }}">我的评论</a>
+        </li>
+    </ul>
+</aside>
+{% endblock menus %}
+
+{% block member %}
+<template>
+    <b-tabs>
+        <b-tab-item label="个人信息" icon="account-outline">
+
+            <div class="columns is-mobile" style="border-bottom: #ededed solid 1px; padding-bottom: 1rem">
+                {% if g.user['avatar'] %}
+                <div class="column is-narrow">
+                    <figure class="image is-96x96">
+                        <img class="is-rounded" src="/admin/static/{{ g.user['avatar'] }}">
+                    </figure>
+                </div>
+                {% endif %}
+                <div class="column is-narrow">
+                    <div style="padding-top: 1.5rem;">
+                        <h1 class="title is-size-4">{{ g.user['username'] }}</h1>
+                        {% if g.user['sign'] %}
+                        <p class="subtitle is-size-6">{{ g.user['sign'] }}</p>
+                        {% else %}
+                        <p class="subtitle is-size-6"></p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="column is-narrow-mobile">
+                    <a class=" button is-light is-pulled-right" href="{{url_for('auth.userinfo_edit',user_id=g.user.user_id)}}" style="margin-top: 1.8rem">修改信息</a>
+                </div>
+            </div>
+
+            <div class="columns" style="padding:1rem 0; ">
+                <div class="column is-2">
+                    <p>个人信息</p>
+                </div>
+                <div class="column">
+                    <div class="columns is-mobile" style="border-bottom: #ededed solid 1px">
+                        <div class="column is-2">
+                            <span class=" has-text-grey-light">用户名</span>
+                        </div>
+                        <div class="column is-narrow">
+                            <span class=" has-text-black-ter">{{ g.user['username'] }}</span>
+                        </div>
+                    </div>
+                    <div class="columns is-mobile" style="border-bottom: #ededed solid 1px">
+                        <div class="column is-2">
+                            <span class=" has-text-grey-light">性别</span>
+                        </div>
+                        <div class="column is-narrow">
+                            {% if g.user['gender'] %}
+                            <span class=" has-text-black-ter">{{ g.user['gender'] }}</span>
+                            {% else %}
+                            <span class=" has-text-black-ter"></span>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    <div class="columns is-mobile" style="border-bottom: #ededed solid 1px">
+                        <div class="column is-2">
+                            <span class=" has-text-grey-light">邮箱</span>
+                        </div>
+                        <div class="column is-narrow">
+                            {% if g.user['email'] %}
+                            <span class=" has-text-black-ter">{{g.user['email']}}</span>
+                            {% else %}
+                            <span class=" has-text-black-ter"></span>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="columns" style="padding:1rem 0; ">
+                <div class="column is-2">
+                    <p>个人简介</p>
+                </div>
+                <div class="column">
+                    {% if g.user['introduce'] %}
+                    <div class="content">
+                        {{ g.user['introduce'] }}
+                    </div>
+                    {% else %}
+                            <div class="content"></div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </b-tab-item>
+    </b-tabs>
+</template>
+{% endblock member %}

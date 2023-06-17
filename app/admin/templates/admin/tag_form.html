@@ -1,0 +1,37 @@
+{% extends 'admin/category.html' %}
+{% block member %}
+<div class="is-block">
+    <div class=" is-pulled-left">
+        <h1 class=" is-size-4">
+            <span class="icon">
+                <i class="mdi mdi-tag-outline"></i>
+            </span>
+            标签管理
+        </h1>
+    </div>
+{% block button %} {% endblock button %}
+<div class="is-clearfix"></div>
+<div class=" dropdown-divider"></div>
+
+{% block table_content %}
+    <form action="" method="post" class="mt-4">
+        {{ form.csrf_token }}
+        <div class="field">
+            {{ form.name.label(class='label') }}
+            <div class="control">
+                {{ form.name(class='input', placeholder='标签名称') }}
+            </div>
+        </div>
+
+        <div class="is-block">
+            <div class="box has-background-light is-shadowless level">
+                <button class=" is-danger button level-left">删除</button>
+                <div class="level-right">
+                    <a href="{{ url_for('admin.tag') }}" class="button is-primary is-light mr-2">返回</a>
+                    <input type="submit" value="保存" class=" button is-success">
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock table_content %}
+{% endblock member %}
